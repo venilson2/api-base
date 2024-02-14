@@ -11,11 +11,7 @@ import { RolesGuard } from './guards/roles.guard';
   imports: [UsersModule, AuthModule, CatsModule],
   controllers: [AppController],
   providers: [
-    AppService, 
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard
-    }
+    AppService
   ]
 })
 export class AppModule {}
