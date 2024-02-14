@@ -14,9 +14,15 @@ export class AuthService {
     pass: string,
   ): Promise<{ access_token: string }> {
     const user = await this.usersService.findOne(username);
+
+    if (!user?.roles?.includes('admin')) {
+      throw new UnauthorizedException('User does not have required roles');
+    };
+
     if (user?.password !== pass) {
       throw new UnauthorizedException();
-    }
+    };
+
     const payload = { sub: user.userId, username: user.username };
     return {
       access_token: await this.jwtService.signAsync(payload),
