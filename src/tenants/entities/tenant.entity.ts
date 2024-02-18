@@ -1,15 +1,6 @@
 import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
 
-@Table(
-    {
-      tableName: 'tenants',
-      timestamps: true,
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-      deletedAt: 'deleted_at',
-      paranoid: true,
-    }
-)
+@Table({tableName: 'tenants'})
 export class Tenant extends Model {
   @PrimaryKey
   @Column({
@@ -35,4 +26,10 @@ export class Tenant extends Model {
     allowNull: false,
   })
   company: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  role: string;
 }

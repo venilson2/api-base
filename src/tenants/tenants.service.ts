@@ -12,7 +12,7 @@ export class TenantsService {
   ) {}
   
   async create(createTenantDto: CreateTenantDto): Promise<Tenant> {
-    const { username, password, company, roles } = createTenantDto;
+    const { username, password, company, role } = createTenantDto;
 
     const existingTenant = await this.tenantModel.findOne({
       where: { username },
@@ -25,7 +25,7 @@ export class TenantsService {
       username,
       password,
       company,
-      roles,
+      role,
     });
 
     return newTenant;
@@ -35,8 +35,9 @@ export class TenantsService {
     return `This action returns all tenants`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tenant`;
+  async findOne(username) {
+    const tenant = await Tenant.findOne({where: { username: username}});
+    return tenant;
   }
 
   update(id: number, updateTenantDto: UpdateTenantDto) {

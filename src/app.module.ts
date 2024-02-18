@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Tenant } from './tenants/entities/tenant.entity';
 import { TenantsModule } from './tenants/tenants.module';
+import { Cat } from './cats/entities/cat.model';
 
 @Module({
   imports: [
@@ -19,7 +20,14 @@ import { TenantsModule } from './tenants/tenants.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      models: [Tenant],
+      models: [Tenant, Cat],
+      define: {
+        timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+        deletedAt: 'deleted_at',
+        paranoid: true,
+      },
       autoLoadModels: true,
       synchronize: true,
       sync: {

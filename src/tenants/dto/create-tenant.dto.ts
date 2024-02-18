@@ -1,4 +1,4 @@
-import { IsArray, IsDefined, IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateTenantDto {
   @IsString()
@@ -16,8 +16,8 @@ export class CreateTenantDto {
   @IsDefined()
   company: string;
 
-  @IsArray()
+  @IsString()
   @IsNotEmpty()
   @IsDefined()
-  roles: string[];
+  role: string;
 }

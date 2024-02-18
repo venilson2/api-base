@@ -8,5 +8,6 @@ import { TenantsService } from './tenants.service';
   imports: [SequelizeModule.forFeature([Tenant])],
   controllers: [TenantsController],
   providers: [TenantsService],
+  exports: [TenantsService],
 })
 export class TenantsModule {}
