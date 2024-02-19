@@ -10,4 +10,10 @@ export class TenantsController {
   create(@Body() createTenantDto: CreateTenantDto) {
     return this.tenantsService.create(createTenantDto);
   }
+
+  @Post('create-schema')
+  async createSchema(@Body() data: {username: string}){
+    const { username } = data;
+    return await this.tenantsService.createSchema(username);
+  }
 }

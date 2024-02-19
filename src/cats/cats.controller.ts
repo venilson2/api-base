@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { RolesGuard } from 'src/guards/roles.guard';
-import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { Tenant } from 'src/decorators/tenant.decorator';
+import { Tenant } from 'src/common/decorators/tenant.decorator';
 
 @Controller('cats')
 @UseGuards(AuthGuard, RolesGuard)

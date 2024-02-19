@@ -1,43 +1,25 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
-import { InjectModel } from '@nestjs/sequelize';
 import { Tenant } from './entities/tenant.entity';
+import { TenantsRepository } from './tenants.repository';
 
 @Injectable()
 export class TenantsService {
   constructor(
-    @InjectModel(Tenant)
-    private readonly tenantModel: typeof Tenant
+    private readonly tenantsRepository: TenantsRepository
   ) {}
-  
-  async create(createTenantDto: CreateTenantDto): Promise<Tenant> {
-    const { username, password, company, role } = createTenantDto;
-
-    const existingTenant = await this.tenantModel.findOne({
-      where: { username },
-    });
-    if (existingTenant) {
-      throw new BadRequestException('A tenant with this username already exists.');
-    }
-
-    const newTenant = await this.tenantModel.create({
-      username,
-      password,
-      company,
-      role,
-    });
-
-    return newTenant;
-  }
 
   findAll() {
     return `This action returns all tenants`;
   }
+  
+  async create(createTenantDto: CreateTenantDto): Promise<Tenant> {
+    return await this.tenantsRepository.create(createTenantDto);
+  }
 
   async findOne(username) {
-    const tenant = await Tenant.findOne({where: { username: username}});
-    return tenant;
+    return this.findOne(username);
   }
 
   update(id: number, updateTenantDto: UpdateTenantDto) {
@@ -46,5 +28,15 @@ export class TenantsService {
 
   remove(id: number) {
     return `This action removes a #${id} tenant`;
+  }
+
+  async createSchema(username: string): Promise<void>{
+    const tenant = await this.tenantsRepository.findOne(username);
+
+    if(!tenant){
+      throw new Error("Tenant not found");
+    }
+
+    return this.tenantsRepository.createSchema(tenant.company);
   }
 }
