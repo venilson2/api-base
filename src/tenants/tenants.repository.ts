@@ -57,18 +57,6 @@ export class TenantsRepository {
     await this.sequelize.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
     await this.sequelize.query(`SET search_path TO ${schemaName}`);
   
-    await this.sequelize.query(`
-      CREATE TABLE IF NOT EXISTS ${schemaName}.cats (
-        id uuid NOT NULL,
-        name character varying(255) NOT NULL,
-        age character varying(255) NOT NULL,
-        created_at timestamp with time zone NOT NULL,
-        updated_at timestamp with time zone NOT NULL,
-        deleted_at timestamp with time zone NULL,
-        CONSTRAINT cats_pkey PRIMARY KEY (id)
-      );
-    `);
-  
     await this.sequelize.query(`SET search_path TO public`);
   }
 }

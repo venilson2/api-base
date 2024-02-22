@@ -9,6 +9,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Tenant } from './tenants/entities/tenant.entity';
 import { TenantsModule } from './tenants/tenants.module';
 import { Cat } from './cats/entities/cat.model';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { Cat } from './cats/entities/cat.model';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      models: [Tenant, Cat],
+      models: [Tenant, User, Cat],
       define: {
         timestamps: true,
         createdAt: 'created_at',
@@ -29,10 +30,9 @@ import { Cat } from './cats/entities/cat.model';
         paranoid: true,
       },
       autoLoadModels: true,
-      synchronize: true,
+      synchronize: false,
       sync: {
-        alter: true,
-        schema: 'public'
+        alter: false,
       },
     }),
     TenantsModule,

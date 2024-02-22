@@ -1,7 +1,7 @@
 import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
 
-@Table({tableName: 'tenants'})
-export class Tenant extends Model {
+@Table({tableName: 'users'})
+export class User extends Model {
   @PrimaryKey
   @Column({
     type: DataType.UUID,
@@ -20,12 +20,6 @@ export class Tenant extends Model {
     allowNull: false,
   })
   password: string;a
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  company: string;
 
   @Column({
     type: DataType.STRING,
