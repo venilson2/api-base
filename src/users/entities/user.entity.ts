@@ -12,6 +12,7 @@ export class User extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    unique: true
   })
   username: string;
 
@@ -19,7 +20,49 @@ export class User extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  password: string;a
+  full_name: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique: true,
+    validate: {
+      isEmail: true,
+    }
+  })
+  email: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    unique: true
+  })
+  phone: string;
+
+  @Column({
+    type: DataType.DATEONLY,
+    allowNull: true,
+  })
+  birth_date: Date;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  reset_token: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  })
+  is_active: boolean;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  password: string;
 
   @Column({
     type: DataType.STRING,

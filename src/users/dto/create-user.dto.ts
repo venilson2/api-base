@@ -1,4 +1,4 @@
-import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString, IsEmail, IsOptional, IsDate } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -15,4 +15,26 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsDefined()
   role: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsDefined()
+  full_name: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @IsDefined()
+  email: string;
+
+  @IsOptional()
+  @IsString()
+  phone: string;
+
+  @IsOptional()
+  @IsDate()
+  birth_date: Date;
+
+  @IsOptional()
+  @IsString()
+  reset_token: string;
 }

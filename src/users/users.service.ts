@@ -1,35 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-    private users: any[];
-    constructor() {
-      this.users = [
-        {
-          id: 1,
-          username: 'john',
-          password: 'changeme',
-          role: 'admin',
-        },
-        {
-          id: 2,
-          username: 'maria',
-          password: 'guess',
-          role: 'user',
-        },
-      ] as User[];
-    }
+    constructor(private readonly usersRepository: UsersRepository) {}
   async findAll(): Promise<User[]> {
-    return this.users;
+    return this.usersRepository.findAll();
   }
 
   async create(createUserDto): Promise<User> {
-    this.users.push(createUserDto);
-    return createUserDto;
-  }
+    const { username, password } = createUserDto;
 
-  async findOne(username): Promise<User> {
-    return this.users.find(user => user.username === username);
+    const existingUser = await this.usersRepository.findOne({ where: { username } });
+    if (existingUser) {
+      throw new BadRequestException('Username already exists');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    createUserDto.password = hashedPassword;
+    const newUser = await  this.usersRepository.create(createUserDto);
+    return newUser;
   }
 }

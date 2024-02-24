@@ -30,9 +30,9 @@ import { User } from './users/entities/user.entity';
         paranoid: true,
       },
       autoLoadModels: true,
-      synchronize: false,
+      synchronize: true,
       sync: {
-        alter: false,
+        alter: true,
       },
     }),
     TenantsModule,
