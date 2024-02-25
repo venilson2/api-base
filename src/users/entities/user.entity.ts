@@ -1,18 +1,23 @@
-import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, BeforeDestroy } from 'sequelize-typescript';
+import { v4 as uuidv4 } from 'uuid';
 
-@Table({tableName: 'users'})
+@Table({
+  tableName: 'users', 
+  timestamps: true, 
+  paranoid: true, 
+  charset: 'utf8', 
+})
 export class User extends Model {
   @PrimaryKey
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4
   })
-  id: number;
+  id: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
-    unique: true
   })
   username: string;
 
@@ -40,25 +45,6 @@ export class User extends Model {
   phone: string;
 
   @Column({
-    type: DataType.DATEONLY,
-    allowNull: true,
-  })
-  birth_date: Date;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  reset_token: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: true,
-  })
-  is_active: boolean;
-
-  @Column({
     type: DataType.STRING,
     allowNull: false,
   })
@@ -69,4 +55,12 @@ export class User extends Model {
     allowNull: false,
   })
   role: string;
+
+  constructor(values?: any, options?: any) {
+    super(values, options);
+
+    if (!this.id) {
+      this.id = uuidv4();
+    }
+  }
 }
