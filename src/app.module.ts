@@ -20,7 +20,7 @@ import { User } from './users/entities/user.entity';
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      database: process.env.DB_NAME,
       models: [Tenant, User, Cat],
       define: {
         timestamps: true,
@@ -29,11 +29,11 @@ import { User } from './users/entities/user.entity';
         deletedAt: 'deleted_at',
         paranoid: true,
       },
-      autoLoadModels: true,
-      synchronize: true,
-      sync: {
-        alter: true,
-      }
+      // autoLoadModels: true,
+      // synchronize: true,
+      // sync: {
+      //   alter: true,
+      // }
     }),
     TenantsModule,
     UsersModule, 

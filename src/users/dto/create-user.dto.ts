@@ -37,4 +37,12 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   reset_token: string;
+
+  @IsNotEmpty()
+  @IsString()
+  company: string;
+
+  @IsOptional()
+  @IsString()
+  company_id: string;
 }

@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, PrimaryKey, BeforeDestroy } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
 import { v4 as uuidv4 } from 'uuid';
 
 @Table({
@@ -55,6 +55,18 @@ export class User extends Model {
     allowNull: false,
   })
   role: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  company: string;
+
+  @Column({
+    type: DataType.UUID,
+    allowNull: true,
+  })
+  company_id: string;
 
   constructor(values?: any, options?: any) {
     super(values, options);
