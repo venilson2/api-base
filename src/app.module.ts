@@ -28,6 +28,11 @@ import { User } from './users/entities/user.entity';
         updatedAt: 'updated_at',
         deletedAt: 'deleted_at',
         paranoid: true,
+      },
+      autoLoadModels: true,
+      synchronize: true,
+      sync: {
+        alter: true,
       }
     }),
     TenantsModule,
