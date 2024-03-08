@@ -1,4 +1,5 @@
-import { IsDefined, IsNotEmpty, IsString, IsEmail, IsOptional} from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsDefined, IsNotEmpty, IsString, IsEmail, IsOptional, IsDate, IsPhoneNumber, IsIn, IsDateString, isDate} from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -11,36 +12,33 @@ export class CreateUserDto {
   @IsDefined()
   password: string;
 
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   @IsDefined()
-  role: string;
+  email: string;
 
   @IsString()
   @IsNotEmpty()
   @IsDefined()
   full_name: string;
 
-  @IsEmail()
-  @IsNotEmpty()
-  @IsDefined()
-  email: string;
-
   @IsOptional()
-  @IsString()
-  phone: string;
-
-  @IsOptional()
-  @IsString()
+  @IsDateString()
   birth_date: Date;
 
   @IsOptional()
   @IsString()
-  reset_token: string;
+  @IsIn(['male', 'female', 'other'])
+  gender: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  company: string;
+  address: string;
+
+  @IsOptional()
+  @IsString()
+  @IsPhoneNumber('BR', { message: 'Invalid phone number' })
+  phone_number: string;
 
   @IsOptional()
   @IsString()

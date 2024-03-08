@@ -1,11 +1,8 @@
-import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, Index } from 'sequelize-typescript';
 import { v4 as uuidv4 } from 'uuid';
 
 @Table({
-  tableName: 'users', 
-  timestamps: true, 
-  paranoid: true, 
-  charset: 'utf8', 
+  tableName: 'users'
 })
 export class User extends Model {
   @PrimaryKey
@@ -18,6 +15,13 @@ export class User extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    unique: true
+  })
+  @Index({
+    unique: true,
+    where: {
+      deleted_at: null,
+    },
   })
   username: string;
 
@@ -25,7 +29,7 @@ export class User extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  full_name: string;
+  password: string;
 
   @Column({
     type: DataType.STRING,
@@ -39,34 +43,49 @@ export class User extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: true,
-    unique: true
-  })
-  phone: string;
-
-  @Column({
-    type: DataType.STRING,
     allowNull: false,
   })
-  password: string;
+  full_name: string;
 
   @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  role: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  company: string;
-
-  @Column({
-    type: DataType.UUID,
+    type: DataType.DATE,
     allowNull: true,
   })
-  company_id: string;
+  birth_date: Date;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    validate: {
+      isIn: [['male', 'female', 'other']]
+    }
+  })
+  gender: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  address: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique: true,
+  })
+  phone_number: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  reset_token: string;
+
+  // @Column({
+  //   type: DataType.UUID,
+  //   allowNull: true,
+  // })
+  // company_id: UUID;
 
   constructor(values?: any, options?: any) {
     super(values, options);

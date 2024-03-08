@@ -29,11 +29,14 @@ import { User } from './users/entities/user.entity';
         deletedAt: 'deleted_at',
         paranoid: true,
       },
-      // autoLoadModels: true,
-      // synchronize: true,
-      // sync: {
-      //   alter: true,
-      // }
+      autoLoadModels: true,
+      synchronize: true,
+      sync: {
+        alter: true,
+      },
+      logging: true,
+      benchmark: true,
+      schema: process.env.SCHEMA,
     }),
     TenantsModule,
     UsersModule, 
