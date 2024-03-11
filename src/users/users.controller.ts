@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Put, Delete, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete, Res, HttpStatus, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,6 +18,11 @@ export class UsersController {
   @Get(':id')
   async findById(@Param('id') id: string) {
     const user = await this.usersService.findById(id);
+    
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     return user;
   }
 
@@ -30,7 +35,7 @@ export class UsersController {
       if (error instanceof UserAlreadyExistsException) {
         return res.status(HttpStatus.CONFLICT).json({ message: error.message, status: 409 });
       } else {
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: 500 });
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: error.status });
       }
     }
   }
@@ -41,8 +46,13 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
     @Res() res: Response,
   ) {
-    const updatedUser = await this.usersService.update(id, updateUserDto);
-    return res.status(HttpStatus.OK).json(updatedUser);
+    try {
+      const user = await this.usersService.update(id, updateUserDto);
+      if (!user) throw new NotFoundException('User not found');
+      return res.status(HttpStatus.OK).json(user);
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: error.status });
+    }
   }
 
   @Delete(':id')
@@ -50,7 +60,12 @@ export class UsersController {
     @Param('id') id: string, 
     @Res() res: Response
   ) {
-    const removedUser = await this.usersService.remove(id);
-    return res.status(HttpStatus.OK).json(removedUser);
+    try {
+      const user = await this.usersService.remove(id);
+      if (user === 0) throw new NotFoundException('User not found');
+      return res.status(HttpStatus.NO_CONTENT).send();
+    } catch (error) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: error.status });
+    }
   }
 }

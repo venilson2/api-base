@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
 import { UpdateUserDto } from './dto/update-tenant.dto';
 import { UserAlreadyExistsException } from './exceptions/user-already-exists.exception';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,23 +13,20 @@ export class UsersService {
     return this.usersRepository.findAll();
   }
 
-  async create(createUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const { username, password } = createUserDto;
 
-    const existingUser = await this.usersRepository.findOne(username);
+    const existingUser = await this.usersRepository.findByUsername(username);
+    if (existingUser) throw new UserAlreadyExistsException();
     
-    if (existingUser) {
-      throw new UserAlreadyExistsException();
-    }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     createUserDto.password = hashedPassword;
     const newUser = await  this.usersRepository.create(createUserDto);
     return newUser;
   }
 
-  async findOne(username: string) {
-    return await this.usersRepository.findOne(username);
+  async findByUsername(username: string) {
+    return await this.usersRepository.findByUsername(username);
   }
 
   async findById(id: string) {
@@ -46,7 +44,7 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    const affectedCount = await this.usersRepository.remove(id);
-    return affectedCount;
+    const user = await this.usersRepository.remove(id);
+    return user;
   }
 }

@@ -27,34 +27,44 @@ export class UsersRepository {
     }
   }
 
-  async findOne(username): Promise<User> {
+  async findByUsername(username): Promise<User> {
     const user = await this.userModel.findOne({ where: { username } });
     return user;
   }
 
   async findById(id: string): Promise<User> {
-    const user = await this.userModel.findOne({ where: { id } });
-    return user;
+    try {
+      const user = await this.userModel.findOne({ 
+        where: { id }
+      });
+      return user;
+    } catch (error) {
+      console.error(`Error in UsersRepository.findById: ${error.message}`);
+      throw error;
+    }
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User | null> {
-    const [affectedCount, updatedUser] = await this.userModel.update(updateUserDto, {
-      where: { id },
-      returning: true
-    });
-  
-    if (affectedCount > 0 && updatedUser.length > 0)  return updatedUser[0];
-    else return null;
+    try {
+      const [affectedCount, updatedUser] = await this.userModel.update(updateUserDto, {
+        where: { id },
+        returning: true
+      });
+    
+      if (affectedCount > 0 && updatedUser.length > 0)  return updatedUser[0];
+      else return null;
+    } catch (error) {
+      console.log(`Error in UsersRepository.update: ${error.message}`)
+      throw error;
+    }
   }
 
   async remove(id: string) {
-    const user = await this.userModel.findOne({ where: { id } });
-    if(!user) {
-      return {
-        message: 'User not found',
-        status: 404
-      }
-    };
-    return await this.userModel.destroy({ where: { id } });
+    try {
+      return await this.userModel.destroy({ where: { id } });
+    } catch (error) {
+      console.log(`Error in UsersRepository.remove: ${error.message}`)
+      throw error;
+    }
   }
 }
