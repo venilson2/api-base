@@ -14,11 +14,8 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { username, password } = createUserDto;
+    const { password } = createUserDto;
 
-    // const existingUser = await this.usersRepository.findByUsername(username);
-    // if (existingUser) throw new UserAlreadyExistsException();
-    
     const hashedPassword = await bcrypt.hash(password, 10);
     createUserDto.password = hashedPassword;
     const newUser = await  this.usersRepository.create(createUserDto);

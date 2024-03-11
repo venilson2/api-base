@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,8 +22,16 @@ export class UsersRepository {
       });
       return newUser;
     } catch (error) {
-      console.error(`Error in UsersRepository.create: ${error.message}`);
-      throw error;
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        const uniqueViolationFields = Object.keys(error.fields);
+        const errorMessage = `Validation error: Fields ${uniqueViolationFields.join(', ')} must be unique.`;
+        
+        console.error(`Error in UsersRepository.create: ${errorMessage}`);
+        throw new ConflictException(errorMessage);
+      } else {
+        console.error(`Error in UsersRepository.create: ${error.message}`);
+        throw new InternalServerErrorException('Internal Server Error');
+      }
     }
   }
 

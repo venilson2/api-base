@@ -10,19 +10,26 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  async findAll(@Res() res: Response): Promise<User[]> {
+    try {
+      return await this.usersService.findAll();
+    } catch (error) {
+      res.status(error.status).json({ message: error.message, status: error.status });
+    }
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    const user = await this.usersService.findById(id);
-    
-    if (!user) {
-      throw new NotFoundException('User not found');
+  async findById(
+    @Param('id') id: string,
+    @Res() res: Response
+  ) {
+    try {
+      const user = await this.usersService.findById(id);
+      if (!user) throw new NotFoundException('User not found');
+      return user;
+    } catch (error) {
+      res.status(error.status).json({ message: error.message, status: error.status });
     }
-
-    return user;
   }
 
   @Post()
@@ -34,7 +41,7 @@ export class UsersController {
       const user = await this.usersService.create(createUserDto);
       return res.status(HttpStatus.CREATED).json(user);
     } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: error.status });
+      res.status(error.status).json({ message: error.message, status: error.status });
     }
   }
 
@@ -49,7 +56,7 @@ export class UsersController {
       if (!user) throw new NotFoundException('User not found');
       return res.status(HttpStatus.OK).json(user);
     } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: error.status });
+      res.status(error.status).json({ message: error.message, status: error.status });
     }
   }
 
@@ -63,7 +70,7 @@ export class UsersController {
       if (user === 0) throw new NotFoundException('User not found');
       return res.status(HttpStatus.NO_CONTENT).send();
     } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: error.status });
+      res.status(error.status).json({ message: error.message, status: error.status });
     }
   }
 }

@@ -17,13 +17,7 @@ export class User extends Model {
     allowNull: false,
     unique: true
   })
-  @Index({
-    unique: true,
-    where: {
-      deleted_at: null,
-    },
-  })
-  username: string;
+  declare username: string;
 
   @Column({
     type: DataType.STRING,
