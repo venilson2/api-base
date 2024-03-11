@@ -4,7 +4,6 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-tenant.dto';
-import { UserAlreadyExistsException } from './exceptions/user-already-exists.exception';
 
 @Controller('users')
 export class UsersController {
@@ -27,16 +26,15 @@ export class UsersController {
   }
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto, @Res() res: Response,) {
+  async create(
+    @Body() createUserDto: CreateUserDto, 
+    @Res() res: Response
+  ) {
     try {
       const user = await this.usersService.create(createUserDto);
       return res.status(HttpStatus.CREATED).json(user);
     } catch (error) {
-      if (error instanceof UserAlreadyExistsException) {
-        return res.status(HttpStatus.CONFLICT).json({ message: error.message, status: 409 });
-      } else {
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: error.status });
-      }
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message, status: error.status });
     }
   }
 
@@ -44,7 +42,7 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Res() res: Response,
+    @Res() res: Response
   ) {
     try {
       const user = await this.usersService.update(id, updateUserDto);

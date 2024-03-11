@@ -17,13 +17,13 @@ export class UsersRepository {
   
   async create(createUserDto: CreateUserDto): Promise<User> {
     try{
-      console.log(createUserDto)
       const newUser = await this.userModel.create({
         ...createUserDto
       });
       return newUser;
     } catch (error) {
-      throw new Error(`Fail create user: ${error}`);
+      console.error(`Error in UsersRepository.create: ${error.message}`);
+      throw error;
     }
   }
 
