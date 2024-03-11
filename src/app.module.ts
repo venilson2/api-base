@@ -6,8 +6,6 @@ import { UsersModule } from './users/users.module';
 import { CatsModule } from './cats/cats.module';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Tenant } from './tenants/entities/tenant.entity';
-import { TenantsModule } from './tenants/tenants.module';
 import { Cat } from './cats/entities/cat.model';
 import { User } from './users/entities/user.entity';
 
@@ -21,7 +19,7 @@ import { User } from './users/entities/user.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [Tenant, User, Cat],
+      models: [User, Cat],
       define: {
         timestamps: true,
         createdAt: 'created_at',
@@ -38,7 +36,6 @@ import { User } from './users/entities/user.entity';
       benchmark: true,
       schema: process.env.SCHEMA,
     }),
-    TenantsModule,
     UsersModule, 
     AuthModule, 
     CatsModule
