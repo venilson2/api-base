@@ -3,7 +3,6 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
 import { UpdateUserDto } from './dto/update-tenant.dto';
-import { UserAlreadyExistsException } from './exceptions/user-already-exists.exception';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
