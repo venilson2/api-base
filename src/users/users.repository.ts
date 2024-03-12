@@ -22,15 +22,16 @@ export class UsersRepository {
       });
       return newUser;
     } catch (error) {
+      let errorMessage = ''
       if (error.name === 'SequelizeUniqueConstraintError') {
         const uniqueViolationFields = Object.keys(error.fields);
-        const errorMessage = `Validation error: Fields ${uniqueViolationFields.join(', ')} must be unique.`;
-        
+        errorMessage = `Validation error: Fields ${uniqueViolationFields.join(', ')} must be unique.`;
         console.error(`Error in UsersRepository.create: ${errorMessage}`);
         throw new ConflictException(errorMessage);
       } else {
-        console.error(`Error in UsersRepository.create: ${error.message}`);
-        throw new InternalServerErrorException('Internal Server Error');
+        errorMessage = `Error in UsersRepository.create: ${error.message}`
+        console.error(errorMessage);
+        throw new InternalServerErrorException(errorMessage);
       }
     }
   }
@@ -52,8 +53,9 @@ export class UsersRepository {
       });
       return user;
     } catch (error) {
-      console.error(`Error in UsersRepository.findById: ${error.message}`);
-      throw error;
+      const errorMessage = `Error in UsersRepository.findById: ${error.message}`
+      console.error(errorMessage);
+      throw errorMessage;
     }
   }
 

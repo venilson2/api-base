@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, PrimaryKey, Index } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
 import { v4 as uuidv4 } from 'uuid';
 
 @Table({
@@ -70,16 +70,25 @@ export class User extends Model {
   phone_number: string;
 
   @Column({
+    type: DataType.ARRAY(DataType.STRING),
+    allowNull: true,
+    validate: {
+      isIn: [['condo_admin', 'resident', 'condo_manager', 'caretaker', 'management_admin', 'fiscal_counselor']]
+    }
+  })
+  roles: string[];
+
+  @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   reset_token: string;
 
-  // @Column({
-  //   type: DataType.UUID,
-  //   allowNull: true,
-  // })
-  // company_id: UUID;
+  @Column({
+    type: DataType.UUID,
+    allowNull: true
+  })
+  company_id: string;
 
   constructor(values?: any, options?: any) {
     super(values, options);

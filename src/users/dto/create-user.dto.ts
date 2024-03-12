@@ -1,4 +1,4 @@
-import { IsDefined, IsNotEmpty, IsString, IsEmail, IsOptional, IsPhoneNumber, IsIn, IsDateString} from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString, IsEmail, IsOptional, IsPhoneNumber, IsIn, IsDateString, IsArray} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -47,6 +47,11 @@ export class CreateUserDto {
   @IsOptional()
   @IsPhoneNumber('BR', { message: 'Invalid phone number' })
   phone_number: string;
+
+  @ApiProperty()
+  @IsArray()
+  @IsIn(['condo_admin', 'resident', 'condo_manager', 'caretaker', 'management_admin', 'fiscal_counselor'])
+  roles: string[];
 
   @ApiProperty()
   @IsString()

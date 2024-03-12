@@ -31,6 +31,7 @@ import { User } from './users/entities/user.entity';
       synchronize: true,
       sync: {
         alter: true,
+        // force: true
       },
       logging: true,
       benchmark: true,
