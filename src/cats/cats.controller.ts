@@ -4,7 +4,9 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Tenant } from 'src/common/decorators/tenant.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Cats')
 @Controller('cats')
 @UseGuards(AuthGuard, RolesGuard)
 export class CatsController {
