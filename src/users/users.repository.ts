@@ -12,7 +12,7 @@ export class UsersRepository {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userModel.findAll();
+    return await this.userModel.findAll();
   }
   
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -22,17 +22,8 @@ export class UsersRepository {
       });
       return newUser;
     } catch (error) {
-      let errorMessage = ''
-      if (error.name === 'SequelizeUniqueConstraintError') {
-        const uniqueViolationFields = Object.keys(error.fields);
-        errorMessage = `Validation error: Fields ${uniqueViolationFields.join(', ')} must be unique.`;
-        console.error(`Error in UsersRepository.create: ${errorMessage}`);
-        throw new ConflictException(errorMessage);
-      } else {
-        errorMessage = `Error in UsersRepository.create: ${error.message}`
-        console.error(errorMessage);
-        throw new InternalServerErrorException(errorMessage);
-      }
+      console.error(`Error in UsersRepository.create: ${error.message}`);
+      return error;
     }
   }
 
@@ -41,8 +32,25 @@ export class UsersRepository {
       const user = await this.userModel.findOne({ where: { username } });
       return user;
     } catch (error) {
-      console.error(`Error in UsersRepository.findByUsername: ${error.message}`);
-      throw error;
+      return error;
+    }
+  }
+
+  async findByEmail(email): Promise<User> {
+    try {
+      const user = await this.userModel.findOne({ where: { email } });
+      return user;
+    } catch (error) {
+      return error
+    }
+  }
+
+  async findByPhoneNumber(phone_number): Promise<User> {
+    try {
+      const user = await this.userModel.findOne({ where: { phone_number } });
+      return user;
+    } catch (error) {
+      return error
     }
   }
 
@@ -53,9 +61,7 @@ export class UsersRepository {
       });
       return user;
     } catch (error) {
-      const errorMessage = `Error in UsersRepository.findById: ${error.message}`
-      console.error(errorMessage);
-      throw errorMessage;
+      return error
     }
   }
 
@@ -70,7 +76,7 @@ export class UsersRepository {
       else return null;
     } catch (error) {
       console.log(`Error in UsersRepository.update: ${error.message}`)
-      throw error;
+      return error;
     }
   }
 

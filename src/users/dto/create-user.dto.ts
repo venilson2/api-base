@@ -1,4 +1,4 @@
-import { IsDefined, IsNotEmpty, IsString, IsEmail, IsOptional, IsPhoneNumber, IsIn, IsDateString, IsArray} from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString, IsEmail, IsOptional, IsPhoneNumber, IsIn, IsDateString, IsArray, ValidateIf } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -50,7 +50,10 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsArray()
-  @IsIn(['condo_admin', 'resident', 'condo_manager', 'caretaker', 'management_admin', 'fiscal_counselor'])
+  @IsIn(
+    ['condo_admin', 'resident', 'condo_manager', 'caretaker', 'management_admin', 'fiscal_counselor'], 
+    { each: true }
+  )
   roles: string[];
 
   @ApiProperty()

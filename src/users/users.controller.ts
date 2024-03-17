@@ -1,5 +1,4 @@
-import { Controller, Post, Body, Get, Param, Put, Delete, Res, HttpStatus, NotFoundException } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Post, Body, Get, Param, Put, Delete, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -12,38 +11,33 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll(@Res() res: Response): Promise<User[]> {
-    try {
-      return await this.usersService.findAll();
-    } catch (error) {
-      res.status(error.status).json({ message: error.message, status: error.status });
+  async findAll(): Promise<User[]> {
+    try{
+      const users = await this.usersService.findAll();
+      return users
+    } catch (error){
+      return error;
     }
   }
 
   @Get(':id')
-  async findById(
-    @Param('id') id: string,
-    @Res() res: Response
-  ) {
+  async findById(@Param('id') id: string) {
     try {
       const user = await this.usersService.findById(id);
       if (!user) throw new NotFoundException('User not found');
       return user;
     } catch (error) {
-      res.status(error.status).json({ message: error.message, status: error.status });
+      return error;
     }
   }
 
   @Post()
-  async create(
-    @Body() createUserDto: CreateUserDto, 
-    @Res() res: Response
-  ) {
+  async create(@Body() createUserDto: CreateUserDto) {
     try {
       const user = await this.usersService.create(createUserDto);
-      return res.status(HttpStatus.CREATED).json(user);
+      return user
     } catch (error) {
-      res.status(error.status).json({ message: error.message, status: error.status });
+      return error;
     }
   }
 
@@ -51,28 +45,26 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Res() res: Response
   ) {
     try {
       const user = await this.usersService.update(id, updateUserDto);
       if (!user) throw new NotFoundException('User not found');
-      return res.status(HttpStatus.OK).json(user);
+      return user
     } catch (error) {
-      res.status(error.status).json({ message: error.message, status: error.status });
+      return error;
     }
   }
 
   @Delete(':id')
   async remove(
     @Param('id') id: string, 
-    @Res() res: Response
   ) {
     try {
       const user = await this.usersService.remove(id);
       if (user === 0) throw new NotFoundException('User not found');
-      return res.status(HttpStatus.NO_CONTENT).send();
+      return user
     } catch (error) {
-      res.status(error.status).json({ message: error.message, status: error.status });
+      return error;
     }
   }
 }

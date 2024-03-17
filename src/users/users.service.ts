@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
@@ -9,16 +9,20 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
   async findAll(): Promise<User[]> {
-    return this.usersRepository.findAll();
+    return await this.usersRepository.findAll();
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { password } = createUserDto;
+    try {
+      const { password } = createUserDto;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    createUserDto.password = hashedPassword;
-    const newUser = await  this.usersRepository.create(createUserDto);
-    return newUser;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      createUserDto.password = hashedPassword;
+      const newUser = await  this.usersRepository.create(createUserDto);
+      return newUser;
+    } catch (error) {
+      return error;
+    }
   }
 
   async findByUsername(username: string) {
