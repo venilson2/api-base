@@ -1,10 +1,9 @@
-import { Controller, Post, Body, Get, Param, Put, Delete, NotFoundException, Res, HttpStatus, ConflictException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Delete, NotFoundException, ConflictException, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
 
 @ApiTags('User')
 @Controller('users')
@@ -12,9 +11,16 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll(): Promise<User[] | void> {
+  
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('sortBy') sortBy: string = 'created_at',
+    @Query('sortDirection') sortDirection: 'ASC' | 'DESC' = 'DESC',
+    @Query('filter') filter: string = ''
+  ): Promise<{ rows: User[]; count: number }> {
     try{
-      const users = await this.usersService.findAll();
+      const users = await this.usersService.findAll(page, limit, sortBy, sortDirection, filter);
       return users
     } catch (error){
       return error

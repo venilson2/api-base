@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Op } from 'sequelize';
+import { OrderItem } from 'sequelize';
 
 @Injectable()
 export class UsersRepository {
@@ -11,8 +13,35 @@ export class UsersRepository {
     private readonly userModel: typeof User,
   ) {}
 
-  async findAll(): Promise<User[]> {
-    return await this.userModel.findAll();
+  async findAll(
+    page: number, 
+    limit: number, 
+    sortBy: string, 
+    sortDirection: 'ASC' | 'DESC', 
+    filter: string
+  ): Promise<{ rows: User[]; count: number }> {
+    const offset = (page - 1) * limit;
+    let whereClause: any = {}; 
+  
+    if (filter) {
+      whereClause = {
+        [Op.or]: [
+          { username: { [Op.like]: `%${filter}%` } }, 
+          { email: { [Op.like]: `%${filter}%` } },    
+          { phone_number: { [Op.like]: `%${filter}%` } }, 
+        ]
+      };
+    }
+  
+    const order: OrderItem[] = [[sortBy, sortDirection]];
+    const { rows, count } = await this.userModel.findAndCountAll({
+      where: whereClause,
+      limit,
+      offset,
+      order,
+    });
+  
+    return { rows, count };
   }
   
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -22,7 +51,6 @@ export class UsersRepository {
       });
       return newUser;
     } catch (error) {
-      console.error(`Error in UsersRepository.create: ${error.message}`);
       return error;
     }
   }
@@ -75,7 +103,6 @@ export class UsersRepository {
       if (affectedCount > 0 && updatedUser.length > 0)  return updatedUser[0];
       else return null;
     } catch (error) {
-      console.log(`Error in UsersRepository.update: ${error.message}`)
       return error;
     }
   }

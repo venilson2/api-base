@@ -8,8 +8,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
-  async findAll(): Promise<User[]> {
-    return await this.usersRepository.findAll();
+    async findAll(page: number, limit: number, sortBy: string, sortDirection: 'ASC' | 'DESC', filter: string): Promise<{ rows: User[]; count: number }> {
+    return await this.usersRepository.findAll(page, limit, sortBy, sortDirection, filter);
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
