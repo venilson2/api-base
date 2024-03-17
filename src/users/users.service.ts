@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
@@ -27,6 +27,14 @@ export class UsersService {
 
   async findByUsername(username: string) {
     return await this.usersRepository.findByUsername(username);
+  }
+
+  async findByEmail(email: string) {
+    return await this.usersRepository.findByEmail(email);
+  }
+
+  async findByPhoneNumber(phone_number: string) {
+    return await this.usersRepository.findByPhoneNumber(phone_number);
   }
 
   async findById(id: string) {
